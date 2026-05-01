@@ -1,4 +1,4 @@
-.PHONY: dev stop clean db frontend backend status
+.PHONY: dev stop clean db frontend backend e2e test status
 
 dev: db backend frontend
 
@@ -11,6 +11,11 @@ frontend:
 
 backend:
 	cd backend && ./gradlew bootRun &
+
+e2e:
+	pnpm --filter wizard-e2e test
+
+test: e2e
 
 stop:
 	-pkill -f "react-scripts" 2>/dev/null
