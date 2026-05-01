@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import StepIndicator from '../components/StepIndicator';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
+import Divider from '@mui/material/Divider';
 import type { WizardData } from '../types';
-import './Steps.css';
 
 const PLAN_LABELS: Record<string, string> = {
   basic: 'ベーシック（¥980/月）',
@@ -10,7 +15,18 @@ const PLAN_LABELS: Record<string, string> = {
   premium: 'プレミアム（¥4,980/月）',
 };
 
-function Step3(): React.ReactElement {
+function ConfirmRow({ label, value }: { label: string; value: string }) {
+  return (
+    <Stack direction="row" sx={{ py: 1.5 }}>
+      <Typography variant="body2" color="text.secondary" sx={{ width: 140, flexShrink: 0 }}>
+        {label}
+      </Typography>
+      <Typography variant="body2">{value || '-'}</Typography>
+    </Stack>
+  );
+}
+
+function Step3() {
   const navigate = useNavigate();
   const [data, setData] = useState<WizardData>({ name: '', email: '', phone: '', plan: '' });
   const [submitting, setSubmitting] = useState(false);
@@ -18,9 +34,7 @@ function Step3(): React.ReactElement {
 
   useEffect(() => {
     const saved = sessionStorage.getItem('wizardData');
-    if (saved) {
-      setData(JSON.parse(saved));
-    }
+    if (saved) setData(JSON.parse(saved));
   }, []);
 
   async function handleSubmit(): Promise<void> {
@@ -42,43 +56,25 @@ function Step3(): React.ReactElement {
   }
 
   return (
-    <div>
-      <StepIndicator currentStep={3} />
-      <div className="step-card">
-        <h2 className="step-card__title">入力内容の確認</h2>
-        <div className="step-card__confirm-row">
-          <div className="step-card__confirm-label">氏名</div>
-          <div className="step-card__confirm-value">{data.name || '-'}</div>
-        </div>
-        <div className="step-card__confirm-row">
-          <div className="step-card__confirm-label">メールアドレス</div>
-          <div className="step-card__confirm-value">{data.email || '-'}</div>
-        </div>
-        <div className="step-card__confirm-row">
-          <div className="step-card__confirm-label">電話番号</div>
-          <div className="step-card__confirm-value">{data.phone || '-'}</div>
-        </div>
-        <div className="step-card__confirm-row">
-          <div className="step-card__confirm-label">プラン</div>
-          <div className="step-card__confirm-value">
-            {PLAN_LABELS[data.plan] || '-'}
-          </div>
-        </div>
-        {error && <p className="step-card__error">{error}</p>}
-        <div className="step-card__actions">
-          <button className="step-card__button" onClick={() => navigate('/step2')} disabled={submitting}>
-            戻る
-          </button>
-          <button
-            className="step-card__button step-card__button--primary"
-            onClick={handleSubmit}
-            disabled={submitting}
-          >
+    <Card>
+      <CardContent>
+        <Typography variant="h6" gutterBottom>入力内容の確認</Typography>
+        <ConfirmRow label="氏名" value={data.name} />
+        <Divider />
+        <ConfirmRow label="メールアドレス" value={data.email} />
+        <Divider />
+        <ConfirmRow label="電話番号" value={data.phone} />
+        <Divider />
+        <ConfirmRow label="プラン" value={PLAN_LABELS[data.plan] || '-'} />
+        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
+        <Stack direction="row" justifyContent="space-between" sx={{ mt: 3 }}>
+          <Button onClick={() => navigate('/step2')} disabled={submitting}>戻る</Button>
+          <Button variant="contained" onClick={handleSubmit} disabled={submitting}>
             {submitting ? '送信中...' : '申し込む'}
-          </button>
-        </div>
-      </div>
-    </div>
+          </Button>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 }
 

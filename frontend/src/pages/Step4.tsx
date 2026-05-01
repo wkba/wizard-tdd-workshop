@@ -1,17 +1,22 @@
-import React from 'react';
-import StepIndicator from '../components/StepIndicator';
-import './Steps.css';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import Typography from '@mui/material/Typography';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import Stack from '@mui/material/Stack';
 
-function Step4(): React.ReactElement {
+function Step4() {
   return (
-    <div>
-      <StepIndicator currentStep={4} />
-      <div className="step-card">
-        <h2 className="step-card__title">申し込み完了</h2>
-        <p className="step-card__message">お申し込みありがとうございます。</p>
-        <p className="step-card__message">確認メールをお送りしました。</p>
-      </div>
-    </div>
+    <Card>
+      <CardContent>
+        <Stack alignItems="center" spacing={2} sx={{ py: 3 }}>
+          <CheckCircleOutlineIcon color="success" sx={{ fontSize: 64 }} />
+          <Typography variant="h6">申し込み完了</Typography>
+          <Typography color="text.secondary">
+            お申し込みありがとうございます。確認メールをお送りしました。
+          </Typography>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 }
 

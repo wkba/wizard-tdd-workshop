@@ -1,10 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import StepIndicator from '../components/StepIndicator';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
 import type { WizardData } from '../types';
-import './Steps.css';
 
-function Step1(): React.ReactElement {
+function Step1() {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -22,19 +26,16 @@ function Step1(): React.ReactElement {
   }, []);
 
   function validate(): Record<string, string> {
-    const newErrors: Record<string, string> = {};
-    if (!name.trim()) newErrors.name = '氏名を入力してください';
-    if (!email.trim()) newErrors.email = 'メールアドレスを入力してください';
-    if (!phone.trim()) newErrors.phone = '電話番号を入力してください';
-    return newErrors;
+    const e: Record<string, string> = {};
+    if (!name.trim()) e.name = '氏名を入力してください';
+    if (!email.trim()) e.email = 'メールアドレスを入力してください';
+    if (!phone.trim()) e.phone = '電話番号を入力してください';
+    return e;
   }
 
   function handleNext(): void {
-    const newErrors = validate();
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+    const e = validate();
+    if (Object.keys(e).length > 0) { setErrors(e); return; }
     const saved = sessionStorage.getItem('wizardData');
     const data: WizardData = saved ? JSON.parse(saved) : { name: '', email: '', phone: '', plan: '' };
     data.name = name;
@@ -45,50 +46,45 @@ function Step1(): React.ReactElement {
   }
 
   return (
-    <div>
-      <StepIndicator currentStep={1} />
-      <div className="step-card">
-        <h2 className="step-card__title">個人情報</h2>
-        <div className="step-card__field">
-          <label className="step-card__label">氏名</label>
-          <input
-            className="step-card__input"
-            type="text"
+    <Card>
+      <CardContent>
+        <Typography variant="h6" gutterBottom>個人情報</Typography>
+        <Stack spacing={2}>
+          <TextField
+            label="氏名"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            error={!!errors.name}
+            helperText={errors.name}
             placeholder="山田 太郎"
+            fullWidth
           />
-          {errors.name && <p className="step-card__error">{errors.name}</p>}
-        </div>
-        <div className="step-card__field">
-          <label className="step-card__label">メールアドレス</label>
-          <input
-            className="step-card__input"
+          <TextField
+            label="メールアドレス"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            error={!!errors.email}
+            helperText={errors.email}
             placeholder="taro@example.com"
+            fullWidth
           />
-          {errors.email && <p className="step-card__error">{errors.email}</p>}
-        </div>
-        <div className="step-card__field">
-          <label className="step-card__label">電話番号</label>
-          <input
-            className="step-card__input"
+          <TextField
+            label="電話番号"
             type="tel"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
+            error={!!errors.phone}
+            helperText={errors.phone}
             placeholder="090-1234-5678"
+            fullWidth
           />
-          {errors.phone && <p className="step-card__error">{errors.phone}</p>}
-        </div>
-        <div className="step-card__actions">
-          <button className="step-card__button step-card__button--primary" onClick={handleNext}>
-            次へ
-          </button>
-        </div>
-      </div>
-    </div>
+          <Stack direction="row" justifyContent="flex-end">
+            <Button variant="contained" onClick={handleNext}>次へ</Button>
+          </Stack>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 }
 

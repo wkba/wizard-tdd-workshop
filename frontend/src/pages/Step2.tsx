@@ -1,8 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import StepIndicator from '../components/StepIndicator';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardActionArea from '@mui/material/CardActionArea';
+import Button from '@mui/material/Button';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Alert from '@mui/material/Alert';
 import type { Plan, WizardData } from '../types';
-import './Steps.css';
 
 const PLANS: Plan[] = [
   { id: 'basic', name: 'ベーシック', price: '¥980/月', description: '個人利用に最適' },
@@ -10,7 +15,7 @@ const PLANS: Plan[] = [
   { id: 'premium', name: 'プレミアム', price: '¥4,980/月', description: '大規模組織向け' },
 ];
 
-function Step2(): React.ReactElement {
+function Step2() {
   const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState('');
   const [error, setError] = useState('');
@@ -24,10 +29,7 @@ function Step2(): React.ReactElement {
   }, []);
 
   function handleNext(): void {
-    if (!selectedPlan) {
-      setError('プランを選択してください');
-      return;
-    }
+    if (!selectedPlan) { setError('プランを選択してください'); return; }
     const saved = sessionStorage.getItem('wizardData');
     const data: WizardData = saved ? JSON.parse(saved) : { name: '', email: '', phone: '', plan: '' };
     data.plan = selectedPlan;
@@ -36,38 +38,38 @@ function Step2(): React.ReactElement {
   }
 
   return (
-    <div>
-      <StepIndicator currentStep={2} />
-      <div className="step-card">
-        <h2 className="step-card__title">プラン選択</h2>
-        <div className="step-card__plans">
-          {PLANS.map((plan) => {
-            let className = 'step-card__plan';
-            if (selectedPlan === plan.id) {
-              className += ' step-card__plan--selected';
-            }
-            return (
-              <div
-                key={plan.id}
-                className={className}
+    <Card>
+      <CardContent>
+        <Typography variant="h6" gutterBottom>プラン選択</Typography>
+        <Stack spacing={2} sx={{ mb: 2 }}>
+          {PLANS.map((plan) => (
+            <Card
+              key={plan.id}
+              variant="outlined"
+              sx={{
+                borderColor: selectedPlan === plan.id ? 'primary.main' : 'divider',
+                borderWidth: selectedPlan === plan.id ? 2 : 1,
+                bgcolor: selectedPlan === plan.id ? 'primary.50' : 'transparent',
+              }}
+            >
+              <CardActionArea
                 onClick={() => { setSelectedPlan(plan.id); setError(''); }}
+                sx={{ p: 2 }}
               >
-                <div className="step-card__plan-name">{plan.name}</div>
-                <div className="step-card__plan-price">{plan.price}</div>
-                <div className="step-card__plan-desc">{plan.description}</div>
-              </div>
-            );
-          })}
-        </div>
-        {error && <p className="step-card__error">{error}</p>}
-        <div className="step-card__actions">
-          <button className="step-card__button" onClick={() => navigate('/step1')}>戻る</button>
-          <button className="step-card__button step-card__button--primary" onClick={handleNext}>
-            次へ
-          </button>
-        </div>
-      </div>
-    </div>
+                <Typography variant="subtitle1" fontWeight="bold">{plan.name}</Typography>
+                <Typography variant="h6" color="primary">{plan.price}</Typography>
+                <Typography variant="body2" color="text.secondary">{plan.description}</Typography>
+              </CardActionArea>
+            </Card>
+          ))}
+        </Stack>
+        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+        <Stack direction="row" justifyContent="space-between">
+          <Button onClick={() => navigate('/step1')}>戻る</Button>
+          <Button variant="contained" onClick={handleNext}>次へ</Button>
+        </Stack>
+      </CardContent>
+    </Card>
   );
 }
 
