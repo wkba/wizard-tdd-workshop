@@ -10,17 +10,17 @@ frontend:
 	cd frontend && pnpm start &
 
 backend:
-	cd backend && ./mvnw spring-boot:run &
+	cd backend && ./gradlew bootRun &
 
 stop:
 	-pkill -f "react-scripts" 2>/dev/null
-	-pkill -f "spring-boot:run" 2>/dev/null
+	-pkill -f "bootRun" 2>/dev/null
 	docker compose down
 
 clean: stop
 	docker compose down -v
 	rm -rf frontend/node_modules frontend/build
-	rm -rf backend/target
+	rm -rf backend/build backend/.gradle
 
 status:
 	@echo "=== Docker ==="
