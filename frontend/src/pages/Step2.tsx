@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -7,7 +7,8 @@ import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
-import type { Plan, WizardData } from '../types';
+import { useWizard } from '../hooks/useWizard';
+import type { Plan } from '../types';
 
 const PLANS: Plan[] = [
   { id: 'basic', name: 'ベーシック', price: '¥980/月', description: '個人利用に最適' },
@@ -17,23 +18,11 @@ const PLANS: Plan[] = [
 
 function Step2() {
   const navigate = useNavigate();
-  const [selectedPlan, setSelectedPlan] = useState('');
+  const { data, update } = useWizard();
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    const saved = sessionStorage.getItem('wizardData');
-    if (saved) {
-      const data: WizardData = JSON.parse(saved);
-      setSelectedPlan(data.plan || '');
-    }
-  }, []);
-
   function handleNext(): void {
-    if (!selectedPlan) { setError('プランを選択してください'); return; }
-    const saved = sessionStorage.getItem('wizardData');
-    const data: WizardData = saved ? JSON.parse(saved) : { name: '', email: '', phone: '', plan: '' };
-    data.plan = selectedPlan;
-    sessionStorage.setItem('wizardData', JSON.stringify(data));
+    if (!data.plan) { setError('プランを選択してください'); return; }
     navigate('/step3');
   }
 
@@ -47,13 +36,13 @@ function Step2() {
               key={plan.id}
               variant="outlined"
               sx={{
-                borderColor: selectedPlan === plan.id ? 'primary.main' : 'divider',
-                borderWidth: selectedPlan === plan.id ? 2 : 1,
-                bgcolor: selectedPlan === plan.id ? 'primary.50' : 'transparent',
+                borderColor: data.plan === plan.id ? 'primary.main' : 'divider',
+                borderWidth: data.plan === plan.id ? 2 : 1,
+                bgcolor: data.plan === plan.id ? 'primary.50' : 'transparent',
               }}
             >
               <CardActionArea
-                onClick={() => { setSelectedPlan(plan.id); setError(''); }}
+                onClick={() => { update({ plan: plan.id }); setError(''); }}
                 sx={{ p: 2 }}
               >
                 <Typography variant="subtitle1" fontWeight="bold">{plan.name}</Typography>

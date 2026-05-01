@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -6,42 +6,24 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import type { WizardData } from '../types';
+import { useWizard } from '../hooks/useWizard';
 
 function Step1() {
   const navigate = useNavigate();
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
+  const { data, update } = useWizard();
   const [errors, setErrors] = useState<Record<string, string>>({});
-
-  useEffect(() => {
-    const saved = sessionStorage.getItem('wizardData');
-    if (saved) {
-      const data: WizardData = JSON.parse(saved);
-      setName(data.name || '');
-      setEmail(data.email || '');
-      setPhone(data.phone || '');
-    }
-  }, []);
 
   function validate(): Record<string, string> {
     const e: Record<string, string> = {};
-    if (!name.trim()) e.name = '氏名を入力してください';
-    if (!email.trim()) e.email = 'メールアドレスを入力してください';
-    if (!phone.trim()) e.phone = '電話番号を入力してください';
+    if (!data.name.trim()) e.name = '氏名を入力してください';
+    if (!data.email.trim()) e.email = 'メールアドレスを入力してください';
+    if (!data.phone.trim()) e.phone = '電話番号を入力してください';
     return e;
   }
 
   function handleNext(): void {
     const e = validate();
     if (Object.keys(e).length > 0) { setErrors(e); return; }
-    const saved = sessionStorage.getItem('wizardData');
-    const data: WizardData = saved ? JSON.parse(saved) : { name: '', email: '', phone: '', plan: '' };
-    data.name = name;
-    data.email = email;
-    data.phone = phone;
-    sessionStorage.setItem('wizardData', JSON.stringify(data));
     navigate('/step2');
   }
 
@@ -52,8 +34,8 @@ function Step1() {
         <Stack spacing={2}>
           <TextField
             label="氏名"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={data.name}
+            onChange={(e) => update({ name: e.target.value })}
             error={!!errors.name}
             helperText={errors.name}
             placeholder="山田 太郎"
@@ -62,8 +44,8 @@ function Step1() {
           <TextField
             label="メールアドレス"
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={data.email}
+            onChange={(e) => update({ email: e.target.value })}
             error={!!errors.email}
             helperText={errors.email}
             placeholder="taro@example.com"
@@ -72,8 +54,8 @@ function Step1() {
           <TextField
             label="電話番号"
             type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            value={data.phone}
+            onChange={(e) => update({ phone: e.target.value })}
             error={!!errors.phone}
             helperText={errors.phone}
             placeholder="090-1234-5678"

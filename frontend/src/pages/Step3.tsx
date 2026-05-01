@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -7,7 +7,7 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import Alert from '@mui/material/Alert';
 import Divider from '@mui/material/Divider';
-import type { WizardData } from '../types';
+import { useWizard } from '../hooks/useWizard';
 
 const PLAN_LABELS: Record<string, string> = {
   basic: 'ベーシック（¥980/月）',
@@ -28,14 +28,9 @@ function ConfirmRow({ label, value }: { label: string; value: string }) {
 
 function Step3() {
   const navigate = useNavigate();
-  const [data, setData] = useState<WizardData>({ name: '', email: '', phone: '', plan: '' });
+  const { data, clear } = useWizard();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
-
-  useEffect(() => {
-    const saved = sessionStorage.getItem('wizardData');
-    if (saved) setData(JSON.parse(saved));
-  }, []);
 
   async function handleSubmit(): Promise<void> {
     setSubmitting(true);
@@ -47,7 +42,7 @@ function Step3() {
         body: JSON.stringify(data),
       });
       if (!res.ok) throw new Error('申し込みに失敗しました');
-      sessionStorage.removeItem('wizardData');
+      clear();
       navigate('/step4');
     } catch (err) {
       setError(err instanceof Error ? err.message : '不明なエラーが発生しました');
