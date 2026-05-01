@@ -27,7 +27,7 @@ function Step3(): React.ReactElement {
     setSubmitting(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:8080/api/applications', {
+      const res = await fetch('/api/applications', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
