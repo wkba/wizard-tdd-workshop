@@ -2,7 +2,7 @@
   "name": "wizard-tdd-workshop",
   "private": true,
   "scripts": {
-    "frontend:dev": "pnpm --filter wizard-frontend start",
+    "frontend:dev": "pnpm --filter wizard-frontend dev",
     "frontend:build": "pnpm --filter wizard-frontend build"
   }
 }
