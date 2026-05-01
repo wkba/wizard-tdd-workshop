@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import StepIndicator from '../components/StepIndicator';
 import './Steps.css';
@@ -14,11 +14,23 @@ function Step2() {
   var [selectedPlan, setSelectedPlan] = useState('');
   var [error, setError] = useState('');
 
+  useEffect(function () {
+    var saved = sessionStorage.getItem('wizardData');
+    if (saved) {
+      var data = JSON.parse(saved);
+      setSelectedPlan(data.plan || '');
+    }
+  }, []);
+
   function handleNext() {
     if (!selectedPlan) {
       setError('プランを選択してください');
       return;
     }
+    var saved = sessionStorage.getItem('wizardData');
+    var data = saved ? JSON.parse(saved) : {};
+    data.plan = selectedPlan;
+    sessionStorage.setItem('wizardData', JSON.stringify(data));
     history.push('/step3');
   }
 

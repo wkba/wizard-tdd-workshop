@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import StepIndicator from '../components/StepIndicator';
 import './Steps.css';
@@ -9,6 +9,16 @@ function Step1() {
   var [email, setEmail] = useState('');
   var [phone, setPhone] = useState('');
   var [errors, setErrors] = useState({});
+
+  useEffect(function () {
+    var saved = sessionStorage.getItem('wizardData');
+    if (saved) {
+      var data = JSON.parse(saved);
+      setName(data.name || '');
+      setEmail(data.email || '');
+      setPhone(data.phone || '');
+    }
+  }, []);
 
   function validate() {
     var newErrors = {};
@@ -24,6 +34,12 @@ function Step1() {
       setErrors(newErrors);
       return;
     }
+    var saved = sessionStorage.getItem('wizardData');
+    var data = saved ? JSON.parse(saved) : {};
+    data.name = name;
+    data.email = email;
+    data.phone = phone;
+    sessionStorage.setItem('wizardData', JSON.stringify(data));
     history.push('/step2');
   }
 
