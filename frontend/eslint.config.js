@@ -34,7 +34,7 @@ export default [
     },
   },
   {
-    files: ['src/**/*.test.{ts,tsx}', 'src/**/*.spec.{ts,tsx}'],
+    files: ['src/**/*.test.{ts,tsx}', 'src/**/*.spec.{ts,tsx}', 'src/**/test/**/*.{ts,tsx}'],
     languageOptions: {
       globals: {
         describe: 'readonly',
