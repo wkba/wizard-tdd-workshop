@@ -20,11 +20,8 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-        working-directory: frontend
-      - run: pnpm run lint
-        working-directory: frontend
-      - run: pnpm run test
-        working-directory: frontend
+      - run: pnpm --filter wizard-frontend lint
+      - run: pnpm --filter wizard-frontend test
 
   backend-test:
     name: Backend Tests
@@ -53,8 +50,5 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-        working-directory: e2e
-      - run: pnpm exec playwright install --with-deps chromium
-        working-directory: e2e
-      - run: pnpm run test
-        working-directory: e2e
+      - run: pnpm --filter wizard-e2e exec playwright install --with-deps chromium
+      - run: pnpm --filter wizard-e2e test
