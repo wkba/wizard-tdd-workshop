@@ -12,10 +12,16 @@ frontend:
 backend:
 	cd backend && ./gradlew bootRun &
 
+test-frontend:
+	pnpm --filter wizard-frontend test
+
+test-backend:
+	cd backend && ./gradlew test
+
 e2e:
 	pnpm --filter wizard-e2e test
 
-test: e2e
+test: test-frontend test-backend
 
 stop:
 	-pkill -f "react-scripts" 2>/dev/null
