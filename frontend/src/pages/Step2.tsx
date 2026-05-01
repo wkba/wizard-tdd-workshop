@@ -1,41 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import StepIndicator from '../components/StepIndicator';
+import type { Plan, WizardData } from '../types';
 import './Steps.css';
 
-var PLANS = [
+const PLANS: Plan[] = [
   { id: 'basic', name: 'ベーシック', price: '¥980/月', description: '個人利用に最適' },
   { id: 'standard', name: 'スタンダード', price: '¥1,980/月', description: 'チームでの利用に' },
   { id: 'premium', name: 'プレミアム', price: '¥4,980/月', description: '大規模組織向け' },
 ];
 
-function Step2() {
-  var history = useHistory();
-  var [selectedPlan, setSelectedPlan] = useState('');
-  var [error, setError] = useState('');
+function Step2(): React.ReactElement {
+  const history = useHistory();
+  const [selectedPlan, setSelectedPlan] = useState('');
+  const [error, setError] = useState('');
 
-  useEffect(function () {
-    var saved = sessionStorage.getItem('wizardData');
+  useEffect(() => {
+    const saved = sessionStorage.getItem('wizardData');
     if (saved) {
-      var data = JSON.parse(saved);
+      const data: WizardData = JSON.parse(saved);
       setSelectedPlan(data.plan || '');
     }
   }, []);
 
-  function handleNext() {
+  function handleNext(): void {
     if (!selectedPlan) {
       setError('プランを選択してください');
       return;
     }
-    var saved = sessionStorage.getItem('wizardData');
-    var data = saved ? JSON.parse(saved) : {};
+    const saved = sessionStorage.getItem('wizardData');
+    const data: WizardData = saved ? JSON.parse(saved) : { name: '', email: '', phone: '', plan: '' };
     data.plan = selectedPlan;
     sessionStorage.setItem('wizardData', JSON.stringify(data));
     history.push('/step3');
-  }
-
-  function handleBack() {
-    history.push('/step1');
   }
 
   return (
@@ -44,8 +41,8 @@ function Step2() {
       <div className="step-card">
         <h2 className="step-card__title">プラン選択</h2>
         <div className="step-card__plans">
-          {PLANS.map(function (plan) {
-            var className = 'step-card__plan';
+          {PLANS.map((plan) => {
+            let className = 'step-card__plan';
             if (selectedPlan === plan.id) {
               className += ' step-card__plan--selected';
             }
@@ -53,7 +50,7 @@ function Step2() {
               <div
                 key={plan.id}
                 className={className}
-                onClick={function () { setSelectedPlan(plan.id); setError(''); }}
+                onClick={() => { setSelectedPlan(plan.id); setError(''); }}
               >
                 <div className="step-card__plan-name">{plan.name}</div>
                 <div className="step-card__plan-price">{plan.price}</div>
@@ -64,7 +61,7 @@ function Step2() {
         </div>
         {error && <p className="step-card__error">{error}</p>}
         <div className="step-card__actions">
-          <button className="step-card__button" onClick={handleBack}>戻る</button>
+          <button className="step-card__button" onClick={() => history.push('/step1')}>戻る</button>
           <button className="step-card__button step-card__button--primary" onClick={handleNext}>
             次へ
           </button>

@@ -1,52 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import StepIndicator from '../components/StepIndicator';
+import type { WizardData } from '../types';
 import './Steps.css';
 
-var PLAN_LABELS = {
+const PLAN_LABELS: Record<string, string> = {
   basic: 'ベーシック（¥980/月）',
   standard: 'スタンダード（¥1,980/月）',
   premium: 'プレミアム（¥4,980/月）',
 };
 
-function Step3() {
-  var history = useHistory();
-  var [data, setData] = useState({});
-  var [submitting, setSubmitting] = useState(false);
-  var [error, setError] = useState('');
+function Step3(): React.ReactElement {
+  const history = useHistory();
+  const [data, setData] = useState<WizardData>({ name: '', email: '', phone: '', plan: '' });
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
-  useEffect(function () {
-    var saved = sessionStorage.getItem('wizardData');
+  useEffect(() => {
+    const saved = sessionStorage.getItem('wizardData');
     if (saved) {
       setData(JSON.parse(saved));
     }
   }, []);
 
-  function handleSubmit() {
+  async function handleSubmit(): Promise<void> {
     setSubmitting(true);
     setError('');
-
-    fetch('http://localhost:8080/api/applications', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    })
-      .then(function (res) {
-        if (!res.ok) throw new Error('申し込みに失敗しました');
-        return res.json();
-      })
-      .then(function () {
-        sessionStorage.removeItem('wizardData');
-        history.push('/step4');
-      })
-      .catch(function (err) {
-        setError(err.message);
-        setSubmitting(false);
+    try {
+      const res = await fetch('http://localhost:8080/api/applications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
       });
-  }
-
-  function handleBack() {
-    history.push('/step2');
+      if (!res.ok) throw new Error('申し込みに失敗しました');
+      sessionStorage.removeItem('wizardData');
+      history.push('/step4');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '不明なエラーが発生しました');
+      setSubmitting(false);
+    }
   }
 
   return (
@@ -74,7 +66,7 @@ function Step3() {
         </div>
         {error && <p className="step-card__error">{error}</p>}
         <div className="step-card__actions">
-          <button className="step-card__button" onClick={handleBack} disabled={submitting}>
+          <button className="step-card__button" onClick={() => history.push('/step2')} disabled={submitting}>
             戻る
           </button>
           <button

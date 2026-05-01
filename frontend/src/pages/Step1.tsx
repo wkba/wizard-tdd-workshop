@@ -1,41 +1,42 @@
 import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import StepIndicator from '../components/StepIndicator';
+import type { WizardData } from '../types';
 import './Steps.css';
 
-function Step1() {
-  var history = useHistory();
-  var [name, setName] = useState('');
-  var [email, setEmail] = useState('');
-  var [phone, setPhone] = useState('');
-  var [errors, setErrors] = useState({});
+function Step1(): React.ReactElement {
+  const history = useHistory();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  useEffect(function () {
-    var saved = sessionStorage.getItem('wizardData');
+  useEffect(() => {
+    const saved = sessionStorage.getItem('wizardData');
     if (saved) {
-      var data = JSON.parse(saved);
+      const data: WizardData = JSON.parse(saved);
       setName(data.name || '');
       setEmail(data.email || '');
       setPhone(data.phone || '');
     }
   }, []);
 
-  function validate() {
-    var newErrors = {};
+  function validate(): Record<string, string> {
+    const newErrors: Record<string, string> = {};
     if (!name.trim()) newErrors.name = '氏名を入力してください';
     if (!email.trim()) newErrors.email = 'メールアドレスを入力してください';
     if (!phone.trim()) newErrors.phone = '電話番号を入力してください';
     return newErrors;
   }
 
-  function handleNext() {
-    var newErrors = validate();
+  function handleNext(): void {
+    const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    var saved = sessionStorage.getItem('wizardData');
-    var data = saved ? JSON.parse(saved) : {};
+    const saved = sessionStorage.getItem('wizardData');
+    const data: WizardData = saved ? JSON.parse(saved) : { name: '', email: '', phone: '', plan: '' };
     data.name = name;
     data.email = email;
     data.phone = phone;
@@ -54,7 +55,7 @@ function Step1() {
             className="step-card__input"
             type="text"
             value={name}
-            onChange={function (e) { setName(e.target.value); }}
+            onChange={(e) => setName(e.target.value)}
             placeholder="山田 太郎"
           />
           {errors.name && <p className="step-card__error">{errors.name}</p>}
@@ -65,7 +66,7 @@ function Step1() {
             className="step-card__input"
             type="email"
             value={email}
-            onChange={function (e) { setEmail(e.target.value); }}
+            onChange={(e) => setEmail(e.target.value)}
             placeholder="taro@example.com"
           />
           {errors.email && <p className="step-card__error">{errors.email}</p>}
@@ -76,7 +77,7 @@ function Step1() {
             className="step-card__input"
             type="tel"
             value={phone}
-            onChange={function (e) { setPhone(e.target.value); }}
+            onChange={(e) => setPhone(e.target.value)}
             placeholder="090-1234-5678"
           />
           {errors.phone && <p className="step-card__error">{errors.phone}</p>}

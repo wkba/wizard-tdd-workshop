@@ -5,7 +5,7 @@ import Step2 from './pages/Step2';
 import Step3 from './pages/Step3';
 import Step4 from './pages/Step4';
 
-function App() {
+function App(): React.ReactElement {
   return (
     <div className="app">
       <h1 className="app__title">申し込みウィザード</h1>

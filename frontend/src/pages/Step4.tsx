@@ -2,7 +2,7 @@ import React from 'react';
 import StepIndicator from '../components/StepIndicator';
 import './Steps.css';
 
-function Step4() {
+function Step4(): React.ReactElement {
   return (
     <div>
       <StepIndicator currentStep={4} />
