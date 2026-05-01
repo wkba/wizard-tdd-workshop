@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import StepIndicator from '../components/StepIndicator';
 import type { WizardData } from '../types';
 import './Steps.css';
@@ -11,7 +11,7 @@ const PLAN_LABELS: Record<string, string> = {
 };
 
 function Step3(): React.ReactElement {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [data, setData] = useState<WizardData>({ name: '', email: '', phone: '', plan: '' });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
@@ -34,7 +34,7 @@ function Step3(): React.ReactElement {
       });
       if (!res.ok) throw new Error('申し込みに失敗しました');
       sessionStorage.removeItem('wizardData');
-      history.push('/step4');
+      navigate('/step4');
     } catch (err) {
       setError(err instanceof Error ? err.message : '不明なエラーが発生しました');
       setSubmitting(false);
@@ -66,7 +66,7 @@ function Step3(): React.ReactElement {
         </div>
         {error && <p className="step-card__error">{error}</p>}
         <div className="step-card__actions">
-          <button className="step-card__button" onClick={() => history.push('/step2')} disabled={submitting}>
+          <button className="step-card__button" onClick={() => navigate('/step2')} disabled={submitting}>
             戻る
           </button>
           <button

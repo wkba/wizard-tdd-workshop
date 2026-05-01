@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import StepIndicator from '../components/StepIndicator';
 import type { Plan, WizardData } from '../types';
 import './Steps.css';
@@ -11,7 +11,7 @@ const PLANS: Plan[] = [
 ];
 
 function Step2(): React.ReactElement {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [selectedPlan, setSelectedPlan] = useState('');
   const [error, setError] = useState('');
 
@@ -32,7 +32,7 @@ function Step2(): React.ReactElement {
     const data: WizardData = saved ? JSON.parse(saved) : { name: '', email: '', phone: '', plan: '' };
     data.plan = selectedPlan;
     sessionStorage.setItem('wizardData', JSON.stringify(data));
-    history.push('/step3');
+    navigate('/step3');
   }
 
   return (
@@ -61,7 +61,7 @@ function Step2(): React.ReactElement {
         </div>
         {error && <p className="step-card__error">{error}</p>}
         <div className="step-card__actions">
-          <button className="step-card__button" onClick={() => history.push('/step1')}>戻る</button>
+          <button className="step-card__button" onClick={() => navigate('/step1')}>戻る</button>
           <button className="step-card__button step-card__button--primary" onClick={handleNext}>
             次へ
           </button>

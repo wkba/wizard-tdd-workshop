@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import StepIndicator from '../components/StepIndicator';
 import type { WizardData } from '../types';
 import './Steps.css';
 
 function Step1(): React.ReactElement {
-  const history = useHistory();
+  const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -41,7 +41,7 @@ function Step1(): React.ReactElement {
     data.email = email;
     data.phone = phone;
     sessionStorage.setItem('wizardData', JSON.stringify(data));
-    history.push('/step2');
+    navigate('/step2');
   }
 
   return (
