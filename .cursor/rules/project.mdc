@@ -1,0 +1,34 @@
+---
+description: プロジェクト全体のコーディングガイド
+globs:
+  - "**/*"
+---
+
+# Wizard TDD Workshop - Cursor ルール
+
+## プロジェクト構成
+
+- `frontend/` - React 19 + TypeScript + Vite + MUI
+- `backend/` - Spring Boot 3.x + Java 21 + Gradle
+- `e2e/` - Playwright + Cucumber (Gherkin)
+
+## 開発方針
+
+- TDD サイクルを守る: Red → Green → Refactor（10分以内）
+- テストは「振る舞い」を検証する。内部構造に依存したテストは書かない
+- 1コミット = 1つの意味のある変更
+- コミットメッセージは Conventional Commits に従う
+
+## テスト方針
+
+- FE ユニットテスト: Vitest + Testing Library（振る舞いテスト）
+- BE 統合テスト: JUnit + Testcontainers（実 DB を使う）
+- E2E: Playwright（ユーザー操作を再現）
+- 受け入れテスト: Gherkin で自然言語シナリオを記述
+
+## コマンド
+
+- `make dev` - 全サービス起動
+- `make test` - FE + BE テスト実行
+- `make e2e` - E2E テスト実行
+- `make stop` - 全サービス停止
