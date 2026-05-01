@@ -3,6 +3,17 @@
   "private": true,
   "scripts": {
     "frontend:dev": "pnpm --filter wizard-frontend dev",
-    "frontend:build": "pnpm --filter wizard-frontend build"
+    "frontend:build": "pnpm --filter wizard-frontend build",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "husky": "^9.1.0",
+    "lint-staged": "^15.2.0"
+  },
+  "lint-staged": {
+    "frontend/src/**/*.{ts,tsx}": [
+      "prettier --write",
+      "eslint --fix"
+    ]
   }
 }
